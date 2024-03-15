@@ -49,3 +49,64 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
 1. `README.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+## To deploy this app you need to use this commands:
+```
+kubectl apply -f deployment.yml
+```
+
+```
+kubectl apply -f hpa.yml
+```
+
+## FAQ
+
+***
+
+### Why do I choose these requests and limits?
+```
+ requests:
+   memory: "512Mi"
+   cpu: "2400m"
+ limits:
+   memory: "1024Mi"
+   cpu: "2400m"
+```
+ Because In order to maintain no more than two pods in a running stable state, 
+ I set these limits based on the characteristics of the PC ON WHICH I deploy the application
+ 
+***
+
+### Why do I choose these HPA configuration?
+```
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70
+```
+To distribute the load to other pods in case there are not enough resources.
+Int his case up to five
+
+***
+
+### Why do I choose these strategy configuration?
+```
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+```
+These options provide a balance between availability and 
+reliability when updating this application on Kubernetes.
