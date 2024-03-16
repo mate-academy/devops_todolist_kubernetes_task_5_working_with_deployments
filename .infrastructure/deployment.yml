@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp
+  namespace: mateapp
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: todoapp
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+      - name: todoapp
+        image: ikulyk404/todoapp:3.0.0
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "2400m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2400m"
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: SECRET_KEY
+          value: "44124"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: api/health
+            port: 8080
+          initialDelaySeconds: 70
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: api/ready
+            port: 8080
+          initialDelaySeconds: 70
+          periodSeconds: 5
