@@ -110,3 +110,48 @@ Int his case up to five
 ```
 These options provide a balance between availability and 
 reliability when updating this application on Kubernetes.
+
+***
+
+## How to apply all manifests
+Use command:
+```
+kubectl apply -f .infractructure/
+```
+
+## How to test application using the port-forward command
+Use this command:
+```
+kubectl port-forward service/{service_name} 8081:80
+```
+Content will appear at: 
+```
+localhost:8081
+```
+
+## How to test application using ClusterIP service DNS from a busybox container
+Use this command to connect a 'busybox' pod
+```
+kubectl -n {namespace} exec -it busybox -- sh
+```
+
+Now we can HHHT GET push to the additional CURL tool:
+```
+curl http://{service_name}.{namespace}.svc.cluster.local
+```
+
+## How to test application using a NodePort Service
+Use this command to see port your nodePorts
+```
+kubectl get svc -n {namespace}
+```
+For testing use address like
+```
+http://{NodeIP}:{NodePort}
+```
+Example:
+```
+http://localhost:30007
+```
+
+Well done!
