@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todoapp
-  namespace: mateapp
+  namespace: todoapp
 spec:
   strategy:
     type: RollingUpdate
