@@ -9,7 +9,6 @@ spec:
     rollingUpdate:
       maxUnavailable: 1
       maxSurge: 1
-  replicas: 2
   selector:
     matchLabels:
       app: todoapp
@@ -31,6 +30,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        env:
+        - name: PYTHOVUNBUFFERED
+          value: 1 
         livenessProbe:
           httpGet:
             path: /api/health
