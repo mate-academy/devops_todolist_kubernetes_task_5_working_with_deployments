@@ -51,7 +51,13 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. Create PR with your changes and attach it for validation on a platform.
 
 
-In order to deploy the app to k8s you should execute the next commands:
+In order to deploy the app to k8s you should execute the next steps:
+Create namespace
+You can edit the file namespace.yml and change value 'todoapp' on 'mateapp' and then execute the next command
+kubectl apply -f namespace.yml
+OR You can create the namespace in CLI. You should execute the next command
+kubectl create namespace mateapp
+Then apply the next yaml files
 kubectl apply -f deployment.yml
 kubectl apply -f hpa.yml
 
@@ -65,15 +71,15 @@ Database size
 I/O Operations
 Caching and optimization
 
-I decided to start from 2 replicas. It will be anought for starting and analyzing working. And then will increase amount of the replicas if it has need. Maximaze values of replicas is 5
+I decided to start from 2 replicas. It will be enough for starting and analyzing working. And then will increase amount of the replicas if it has need. Maximize values of replicas is 5
 
 I choosed RollingUpdate strategy configuration with next parameters
 maxUnavailable: 1
 maxSurge: 1
 
 This strategy works well when we need to have constant access to the application
-maxUnavailable: 1 will provide constant work the application
-maxSurge: 1 will provide saving resources
+maxUnavailable: 1 - will provide constant work the application
+maxSurge: 1 - will provide saving resources
 
 In order to check the application in your browser you should execute the next command
 kubectl get pods
