@@ -53,9 +53,6 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 
 In order to deploy the app to k8s you should execute the next steps:
 Create namespace
-You can edit the file namespace.yml and change value 'todoapp' on 'mateapp' and then execute the next command
-kubectl apply -f namespace.yml
-OR You can create the namespace in CLI. You should execute the next command
 kubectl create namespace mateapp
 Then apply the next yaml files
 kubectl apply -f deployment.yml
