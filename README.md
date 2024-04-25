@@ -60,6 +60,9 @@ Use these commands:
 
 2) kubectl apply -f hpa.yml
 
+3) kubectl apply -f namespace.yml  # Create the namespace
+
+
 ### Explanation of resources requests and limits
 
 I chose the resource requests and limits based on the expected resource usage of the application. For memory, I allocated 64Mi as the minimum request and 128Mi as the maximum limit, considering the application's memory requirements. Similarly, for CPU, I set a request of 250m and a limit of 500m to ensure adequate processing power for the application's expected workload, while preventing excessive resource consumption that could lead to contention with other pods on the cluster. Additionally, these values were selected based on the principles outlined in the topic.
