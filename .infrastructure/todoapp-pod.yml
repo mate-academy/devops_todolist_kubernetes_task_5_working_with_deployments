@@ -8,9 +8,12 @@ metadata:
 spec:
   containers:
   - name: todoapp
-    image: ikulyk404/todoapp:3.0.0
+    image: mkostiuk98/todoapp:3.0.0
     ports:
     - containerPort: 8080
+    env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
     livenessProbe:
       httpGet:
         path: api/health
@@ -36,7 +39,7 @@ metadata:
 spec:
   containers:
   - name: todoapp
-    image: ikulyk404/todoapp:3.0.0
+    image: mkostiuk98/todoapp:3.0.0
     env:
     - name: PYTHONUNBUFFERED
       value: "1"
