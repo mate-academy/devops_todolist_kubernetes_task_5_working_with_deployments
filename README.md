@@ -54,47 +54,37 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 
 ### how to deploy the app to k8s
 
+Deploying the App to Kubernetes (K8s)
+
 Use these commands:
 
-1) kubectl apply -f deployment.yml
+kubectl apply -f namespace.yml # Create namespace
+kubectl apply -f deployment.yml # Deploy the app
+kubectl apply -f hpa.yml # Configure automatic scaling (HPA)
 
-2) kubectl apply -f hpa.yml
+### Resource Requests and Limits Explanation
+Resource requests and limits were chosen based on expected app resource usage. Memory: 64Mi as minimum request and 128Mi as maximum limit. CPU: 250m request and 500m limit to ensure adequate processing power while avoiding excessive resource consumption.
 
-3) kubectl apply -f namespace.yml  # Create the namespace
+### HPA Configuration Explanation
+HPA config scales replicas based on observed app resource metrics from 2 to 5 replicas. 'scaleTargetRef' targets 'todoapp' deployment, 'minReplicas' and 'maxReplicas' set lower and upper scaling bounds. CPU and memory metrics considered with a 70% target average utilization for each to efficiently allocate resources.
 
-
-### Explanation of resources requests and limits
-
-I chose the resource requests and limits based on the expected resource usage of the application. For memory, I allocated 64Mi as the minimum request and 128Mi as the maximum limit, considering the application's memory requirements. Similarly, for CPU, I set a request of 250m and a limit of 500m to ensure adequate processing power for the application's expected workload, while preventing excessive resource consumption that could lead to contention with other pods on the cluster. Additionally, these values were selected based on the principles outlined in the topic.
-
-### Explanation of HPA configuration
-
-HPA configuration was chosen to dynamically scale the number of pod replicas based on the observed resource metrics of the application from 2 to 5 Replicas. The 'scaleTargetRef' specifies the Deployment to scale, 'todoapp', while 'minReplicas' and 'maxReplicas' define the lower and upper bounds for scaling, respectively. For metrics, both CPU and memory utilization are considered, with a target average utilization of 70% for each. This ensures that the cluster efficiently allocates resources to meet demand while preventing over-provisioning or under-utilization. By utilizing both CPU and memory metrics, the HPA reacts to different types of resource bottlenecks, optimizing the application's performance and resource utilization in dynamic environments.
-
-### Explanation of strategy configuration (Why such numbers)
-
-The RollingUpdate strategy was chosen to gradually introduce new versions, replacing old pods incrementally to minimize disruptions. By allowing only one additional pod during updates and ensuring at least one old pod remains available ('maxSurge: 1' and 'maxUnavailable: 1' respectively), the strategy balances efficient deployment with maintaining service availability. These settings align with best practices for continuous delivery and service reliability.
-
-### how to access the app after deployment
+### Strategy Configuration Explanation (Why These Numbers)
+RollingUpdate strategy chosen to gradually introduce new versions, replacing old pods incrementally. Only one additional pod allowed during updates, ensuring at least one old pod remains available ('maxSurge: 1' and 'maxUnavailable: 1' respectively) for efficient deployment and service availability. These settings align with best practices for continuous delivery and service reliability.
 
 
-1. start manifest:
+### To access the app:
 
-- kubectl apply -f nodeport.yml
+Start the manifest:
 
-You should got such answer: 
+kubectl apply -f nodeport.yml
 
-service/todoapp-nodeport-service created
+# Get the service name:
 
-2. Get name of service:
+kubectl get services -o wide
 
-- kubectl get services -o wide
-
-3. Check service:
-
-Externall Access:
+# Check the service:External Access:
 
 http://"nodeIP":30080
-```
-on localhost:
+
+# On localhost:
 http://localhost:30080
