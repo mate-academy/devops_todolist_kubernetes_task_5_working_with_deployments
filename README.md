@@ -49,3 +49,15 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
 1. `README.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+README updated
+
+1. kubectl create namespace mateapp (and update namespace on other files from .infrastructure folder)
+2. Create Deployment manifest:
+Resource Requests and Limits been choosen to to ensure high availability and load distribution for 2 pods, and prevents any single pod from hogging resources.
+3. Create HPA manifest:
+Ensure there are always at least 2 pods running for availability and allow scaling up to 5 pods based on CPU and Memory usage to handle variable loads efficiently.
+4. kubectl apply -f nodeport.yml -n mateapp (forward -port to config  an accessiblety from browsr and visit http://<node-ip>:30080
+ )
+5. The RollingUpdate strategy updates the application with zero downtime by allowing only one pod to be unavailable and adding one extra pod temporarily to speed up the process.
