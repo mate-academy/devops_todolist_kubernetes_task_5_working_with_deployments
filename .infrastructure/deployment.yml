@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploymentcntrlr
+  namespace: mateapp
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todoapp
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+        - name: todoapp
+          image: ikulyk404/todoapp:3.0.0
+          env:
+          - name: PYTHONUNBUFFERED
+            value: "1"
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          ports:
+          - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: api/health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: api/ready
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
