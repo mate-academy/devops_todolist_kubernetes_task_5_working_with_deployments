@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: todoapp
-  namespace: todoapp
+  name: todoapp-service
+  namespace: mateapp
 spec:
   type: ClusterIP
   selector:
