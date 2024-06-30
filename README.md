@@ -1,51 +1,63 @@
-# Django ToDo list
-
-This is a todo list web application with basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
-
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
-
-## Explore
-
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
+1. Create namespace for application
 
 ```
-pip install -r requirements.txt
+kubectl apply -f .infrastructure/namespace.yml
 ```
 
-Create a database schema:
+2. Update default config namespace for more comfortable running application
 
 ```
-python manage.py migrate
+kubectl config set-context --current --namespace=mateapp
 ```
 
-And then start the server (default is http://localhost:8000):
+3. Create deployment
 
 ```
-python manage.py runserver
+kubectl apply -f .infrastructure/deployment.yml
 ```
 
-Now you can browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
+4. Check for successfully created deployment
 
-## Task
+```
+kubectl get deployment -o wide
+kubectl get replicaset -o wide
+kubectl get pods -o wide
+```
 
-Create a kubernetes manifest for a pod which will containa ToDo app container:
+5. Add and check pod and services from previous task
 
-1. Fork this repository.
-1. Create a `deployment.yml` file with a deployment for the app.
-1. Deployment should have
-    1. Strategy: RollingUpdate
-    1. Resource requests and limits (in idle state you should have 2 pods running)
-    1. Pod spec should be same as for pods manifest
-1. Createa a `hpa.yml` file with a Horizontal Pod Autoscaler for the app.
-1. Autoscaler should define
-    1. Minimum number of pods as 2
-    2. Maximum number of pods as 5
-    3. Autoscale should be triggered by both CPU and Memory
-1. Both new manifests should belong to `mateapp` namespace
-1. `README.md` should be updated with the instructions on how to deploy the app to k8s
-1. `README.md` Should have explained you choice of resources requests and limits
-1. `README.md` Should have explained your choice of HPA configuration
-1. `README.md` Should have explained your strategy configuration (Why such numbers)
-1. `README.md` Should have explained how to access the app after deployment
-1. Create PR with your changes and attach it for validation on a platform.
+```
+kubectl apply -f .infrastructure/clusterIp.yml
+kubectl apply -f .infrastructure/nodeport.yml
+kubectl apply -f .infrastructure/curl.yml
+kubectl get svc -o wide
+```
+
+6. Create Metrics Server service to
+
+```
+kubectl apply -f .infrastructure/metricsServer.yml
+```
+
+7. Check for successfully created Metrics Server service
+
+```
+kubectl get pods -A
+```
+
+8. Create Horizontal Pod Autoscaler
+
+```
+kubectl apply -f .infrastructure/hpa.yml
+```
+
+9. Now you could monitor used resources by executing
+
+```
+kubectl get hpa -A -w
+```
+
+10. Deployment was configured with requested 64Mi memory and 250m of CPU, and 512Mi memory and 500m of CPU limits in high loading, after start testing and got memory overloading even with 4Gi in limit of memory.
+11. HPA configuration checking loading of working pods and if loading of memory or cpu increase over 70% HPA will run extra pod, due to task requirements minimum amount of replicas is 2 and maximum 5
+12. Deployment has RollingUpdate strategy type, it ensure 24/7 working application with 1 extra working replica and 1 unavailable replica during updating
+13. Now you can enjoy fantastic todo application on http://localhost:30007/ or http://127.0.0.1:30007/
