@@ -1,51 +1,24 @@
-# Django ToDo list
-
-This is a todo list web application with basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
-
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
-
-## Explore
-
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
-
-```
-pip install -r requirements.txt
-```
-
-Create a database schema:
-
-```
-python manage.py migrate
-```
-
-And then start the server (default is http://localhost:8000):
-
-```
-python manage.py runserver
-```
-
-Now you can browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
-
-## Task
-
-Create a kubernetes manifest for a pod which will containa ToDo app container:
-
-1. Fork this repository.
-1. Create a `deployment.yml` file with a deployment for the app.
-1. Deployment should have
-    1. Strategy: RollingUpdate
-    1. Resource requests and limits (in idle state you should have 2 pods running)
-    1. Pod spec should be same as for pods manifest
-1. Createa a `hpa.yml` file with a Horizontal Pod Autoscaler for the app.
-1. Autoscaler should define
-    1. Minimum number of pods as 2
-    2. Maximum number of pods as 5
-    3. Autoscale should be triggered by both CPU and Memory
-1. Both new manifests should belong to `mateapp` namespace
-1. `README.md` should be updated with the instructions on how to deploy the app to k8s
-1. `README.md` Should have explained you choice of resources requests and limits
-1. `README.md` Should have explained your choice of HPA configuration
-1. `README.md` Should have explained your strategy configuration (Why such numbers)
-1. `README.md` Should have explained how to access the app after deployment
-1. Create PR with your changes and attach it for validation on a platform.
+how to deploy the app to k8s
+kubectl apply -f deployment.yml
+kubectl apply -f hpa.yml
+choice of resources requests and limits
+The resource requests and limits are set to ensure that the application has the necessary resources to run efficiently without overloading the cluster. The chosen values are:
+Requests: 64Mi memory and 250m CPU
+Limits: 128Mi memory and 500m CPU
+choice of HPA configuration
+Minimum and Maximum Pods: The HPA will maintain a minimum of 2 pods and can scale up to a maximum of 5 pods based on resource usage.
+Autoscaling Triggers: The autoscaling is triggered by:
+CPU utilization exceeding 80%
+Memory utilization exceeding 70%
+strategy configuration (Why such numbers)
+The RollingUpdate strategy ensures zero downtime during updates. 
+The configuration parameters:
+maxUnavailable: 1: Ensures that at least one pod remains available during updates. This value is chosen to maintain high availability of the application. If a pod becomes unavailable during an update, there will still be at least one other pod running to handle user requests.
+maxSurge: 1: Allows one additional pod to be created during updates. This value is chosen to balance resource utilization and update speed. By limiting the number of additional pods to one, we prevent excessive resource consumption while still allowing the update process to proceed efficiently.
+how to access the app after deployment
+kubectl apply -f .infractructure/
+how to test
+kubectl -n todoapp exec -it busybox -- sh
+curl http://{service-name}.{namespace}.svc.cluster.local
+kubectl port-forward service/{service_name} 8081:80
+open a web browser and navigate to http://localhost:30080
