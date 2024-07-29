@@ -23,9 +23,6 @@ spec:
           image: ikulyk404/todoapp:3.0.0
           ports:
             - containerPort: 8080
-          env:
-            - name: EXTERNAL_ENDPOINT
-              value: "http://httpbin-api.mateapp.svc.cluster.local"
           resources:
             requests:
               memory: "128Mi"
