@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp
+  namespace: todoapp
+  labels:
+    app: todoapp
+spec:
+  strategy:
+    type: RollingUpdate
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todoapp
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+        - name: todoapp
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "800m"
+          image: fredfredburger/todoapp:3.0.2
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: api/health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: api/readiness
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
