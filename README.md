@@ -1,51 +1,31 @@
-# Django ToDo list
+# Create namespace and apply deployment and hpa files
+kubectl create namespace mateapp
 
-This is a todo list web application with basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
+kubectl apply -f deployment.yml
 
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
+kubectl apply -f hpa.yml
 
-## Explore
+# The following resource requests and limits are set to ensure that the application has enough resources to run efficiently without overloading the cluster:
+Requests: 64Mi memory and 250m CPU
 
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
+Limits: 130Mi memory and 500m CPU
 
-```
-pip install -r requirements.txt
-```
+# The HPA configuration ensures that the application can scale to handle varying loads while maintaining resource efficiency. 
+The target averageUtilization: 70 was chosen to balance performance and cost, ensuring that the application can respond to increased demand without over-provisioning resources.
 
-Create a database schema:
+# Choice of Strategy Configuration
+The RollingUpdate strategy with maxUnavailable: 1 and maxSurge: 1 ensures a smooth update process with minimal impact on application availability. 
 
-```
-python manage.py migrate
-```
+This configuration balances the need for continuous availability with the ability to deploy updates efficiently.
 
-And then start the server (default is http://localhost:8000):
+# How to access and test the application after deployment
+kubectl apply -f .infractructure/
 
-```
-python manage.py runserver
-```
+kubectl -n todoapp exec -it busybox -- sh
 
-Now you can browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
+curl http://{service-name}.{namespace}.svc.cluster.local
 
-## Task
+kubectl port-forward service/{service_name} 8081:80
 
-Create a kubernetes manifest for a pod which will containa ToDo app container:
-
-1. Fork this repository.
-1. Create a `deployment.yml` file with a deployment for the app.
-1. Deployment should have
-    1. Strategy: RollingUpdate
-    1. Resource requests and limits (in idle state you should have 2 pods running)
-    1. Pod spec should be same as for pods manifest
-1. Createa a `hpa.yml` file with a Horizontal Pod Autoscaler for the app.
-1. Autoscaler should define
-    1. Minimum number of pods as 2
-    2. Maximum number of pods as 5
-    3. Autoscale should be triggered by both CPU and Memory
-1. Both new manifests should belong to `mateapp` namespace
-1. `README.md` should be updated with the instructions on how to deploy the app to k8s
-1. `README.md` Should have explained you choice of resources requests and limits
-1. `README.md` Should have explained your choice of HPA configuration
-1. `README.md` Should have explained your strategy configuration (Why such numbers)
-1. `README.md` Should have explained how to access the app after deployment
-1. Create PR with your changes and attach it for validation on a platform.
+# Or accessing via browser
+http://localhost:30080
