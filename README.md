@@ -49,3 +49,41 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
 1. `README.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+## How to deploy the app to k8s:
+
+Use commands:
+
+```
+kubectl apply -f deployment.yml
+```
+
+```
+kubectl apply -f hpa.yml
+```
+# Explanation with my choice of resources requests and limits
+
+```
+Simply because these boundaries were in theory, and they work well for our learning environment.
+```
+
+# Test app with the port-forward
+
+Command:
+
+```
+kubectl port-forward service/{service_name} 8000:80
+```
+
+## Test app with ClusterIP
+
+Commands:
+
+```
+kubectl -n {namespace} exec -it busybox -- sh
+```
+
+```
+curl http://{service_name}.{namespace}.svc.cluster.local
+```
