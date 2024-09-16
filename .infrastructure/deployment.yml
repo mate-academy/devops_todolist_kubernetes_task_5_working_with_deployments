@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todoapp
+  name: todoapp-deployment
+  namespace: todoapp
 spec:
   strategy:
     type: RollingUpdate
