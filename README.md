@@ -44,8 +44,63 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
     3. Autoscale should be triggered by both CPU and Memory
 1. Both new manifests should belong to `mateapp` namespace
 1. `README.md` should be updated with the instructions on how to deploy the app to k8s
+
+Instruction: 
+
+1. Apply the app config files:
+
+```
+kubectl apply -f .infrastructure/namespace.yml
+```
+```
+kubectl apply -f .infrastructure/busybox.yml
+```
+```
+kubectl apply -f .infrastructure/clusterIp.yml 
+```
+```
+kubectl apply -f .infrastructure/deployment.yml
+```
+```
+kubectl apply -f .infrastructure/nodeport.yml
+```
+```
+kubectl apply -f .infrastructure/hpa.yml
+```
+
+2. Check the deployment:
+```
+kubectl get pods -n todoapp
+```
 1. `README.md` Should have explained you choice of resources requests and limits
+
+The choice of resources and limits was made using the example from the course. The chosen resources and limits are 
+pretty enough for the todo app for education purposes.
+
 1. `README.md` Should have explained your choice of HPA configuration
+
+HPA configuration choice was made as the resources and limits choice - using examples from the course. 
+The HPA configuration fully meets the requirements and guarantees high fault tolerance 
+
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
+
+A deployment strategy was implemented using the example from the course and the task requirements. Using 
+such a configuration we can be sure that the application is accessible during the deployments
+
 1. `README.md` Should have explained how to access the app after deployment
+
+Using clusterIP:
+```
+kubectl port-forward service/todoapp 8080:80 -n todoapp 
+```
+
+Using nodePort:
+```
+kubectl -n todoapp exec -it busybox -- sh
+```
+```
+curl http://todoapp.todoapp.svc.cluster.local
+```
+
+
 1. Create PR with your changes and attach it for validation on a platform.
