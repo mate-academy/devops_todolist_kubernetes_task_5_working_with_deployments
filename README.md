@@ -1,51 +1,33 @@
-# Django ToDo list
+## how to deploy the app to k8s:
 
-This is a todo list web application with basic features of most web apps, i.e., accounts/login, API, and interactive UI. To do this task, you will need:
+kubectl apply -f deployment.yml
+kubectl apply -f hpa.yml
 
-- CSS | [Skeleton](http://getskeleton.com/)
-- JS  | [jQuery](https://jquery.com/)
 
-## Explore
+## Explaining the choice of resources requests and limits
 
-Try it out by installing the requirements (the following commands work only with Python 3.8 and higher, due to Django 4):
+By configuring these requests and limits, we guarantee that no more than two pods can operate simultaneously without straining the system. These values are customized according to the specifications of the PC where the application will be deployed.
 
-```
-pip install -r requirements.txt
-```
+## Explaining the choice of HPA configuration
 
-Create a database schema:
+minReplicas set to 2 and maxReplicas set to 5 - This allows the application to scale up or down dynamically based on demand.
+averageUtilization set at 70% - Both CPU and memory utilization thresholds are established at 70%. If usage exceeds this limit, additional pods will be created; conversely, if it drops below, unnecessary pods will be terminated.
+## Explaining the strategy configuration
 
-```
-python manage.py migrate
-```
+RollingUpdate strategy - This approach facilitates a gradual deployment of new versions. It replaces old pods with new ones incrementally, which minimizes service interruptions. By permitting only one pod to be updated at a time (maxSurge: 1), it ensures a smooth transition.
 
-And then start the server (default is http://localhost:8000):
+maxUnavailable set to 1 - This setting guarantees that at least one old pod remains accessible during the update process.
 
-```
-python manage.py runserver
-```
+## How to access the app after deployment
 
-Now you can browse the [API](http://localhost:8000/api/) or start on the [landing page](http://localhost:8000/).
+kubectl apply -f .infractructure/
 
-## Task
+## Test app with the port-forward
 
-Create a kubernetes manifest for a pod which will containa ToDo app container:
+kubectl port-forward service/{service_name} 8081:80
 
-1. Fork this repository.
-1. Create a `deployment.yml` file with a deployment for the app.
-1. Deployment should have
-    1. Strategy: RollingUpdate
-    1. Resource requests and limits (in idle state you should have 2 pods running)
-    1. Pod spec should be same as for pods manifest
-1. Createa a `hpa.yml` file with a Horizontal Pod Autoscaler for the app.
-1. Autoscaler should define
-    1. Minimum number of pods as 2
-    2. Maximum number of pods as 5
-    3. Autoscale should be triggered by both CPU and Memory
-1. Both new manifests should belong to `mateapp` namespace
-1. `README.md` should be updated with the instructions on how to deploy the app to k8s
-1. `README.md` Should have explained you choice of resources requests and limits
-1. `README.md` Should have explained your choice of HPA configuration
-1. `README.md` Should have explained your strategy configuration (Why such numbers)
-1. `README.md` Should have explained how to access the app after deployment
-1. Create PR with your changes and attach it for validation on a platform.
+## Test app with ClusterIP
+
+kubectl -n {namespace} exec -it busybox -- sh
+
+curl http://{service_name}.{namespace}.svc.cluster.local
