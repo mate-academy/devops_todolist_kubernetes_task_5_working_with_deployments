@@ -49,3 +49,19 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
 1. `README.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+## Deploy app
+To deploy app use next command
+
+    kubectl apply -f .infrastructure/deployment.yml 
+
+## Resources
+For our task optimal resources are: 64Mi RAM and 250m CPU to save system resources, and in case of load, new pods will be created.
+
+## Hpa configuration
+We choice 2 pod in default and max 5. When cpu or memory utilization more 70% we add new pod.This is the best option for scaling our application during loads.
+
+## Access to app
+To open our app use next ling 
+
+    http://localhost:30080/
