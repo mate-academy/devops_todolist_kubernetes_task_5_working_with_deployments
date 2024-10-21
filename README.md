@@ -49,3 +49,42 @@ Create a kubernetes manifest for a pod which will containa ToDo app container:
 1. `README.md` Should have explained your strategy configuration (Why such numbers)
 1. `README.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+---
+
+## Deploying the Application to Kubernetes
+First, ensure kubectl is installed and connected to your Kubernetes cluster. Deploy the app with:
+```bash
+kubectl apply -f deployment.yml
+```
+## Checking the Deployment
+Verify that the pods are running with:
+```bash
+kubectl get pods -n mateapp
+```
+## Resource Requests and Limits
+ - Memory and CPU Requests: Set at "128Mi" for memory and "250m" for CPU, ensuring sufficient resources for the basic functionality of the Django application under typical workloads.
+ - Memory and CPU Limits: Set at "256Mi" for memory and "500m" for CPU to prevent overuse of cluster resources during peak times.
+## Horizontal Pod Autoscaler (HPA)
+The HPA adjusts the number of pods based on CPU usage, ensuring the app handles increased traffic while maintaining performance. Set CPU utilization at 80%, with specified minimum and maximum pod counts based on expected traffic.
+
+## Update Strategy
+RollingUpdate Strategy: Allows updates with no downtime by controlling:
+
+ - maxSurge (1): One extra pod during updates.
+ - maxUnavailable (1): Only one pod unavailable at a time during updates.
+
+## Accessing the Service
+### Test app with the port-forward
+```
+kubectl port-forward service/{service_name} 8000:80
+```
+
+### Test app with ClusterIP
+```
+kubectl -n {namespace} exec -it busybox -- sh
+```
+
+```
+curl http://{service_name}.{namespace}.svc.cluster.local
+```
