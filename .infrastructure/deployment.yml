@@ -4,6 +4,7 @@ metadata:
   name: todoapp
   namespace: mateapp
 spec:
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
