@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
   - name: busybox
-    image: radial/busyboxplus:curl
+    image: curlimages/curl:latest
     args:
     - sleep
     - "1000"
