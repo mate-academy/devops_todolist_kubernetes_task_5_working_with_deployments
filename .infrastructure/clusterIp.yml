@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todoapp
-  namespace: todoapp
+  namespace: todoapp-clusterip
 spec:
   type: ClusterIP
   selector:

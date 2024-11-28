@@ -49,3 +49,51 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+# ---------------------------------------
+
+# Deploy the application following the commands:
+
+kubectl apply -f ./.infrastructure/namespace.yml
+kubectl apply -f ./.infrastructure/busybox.yml
+kubectl apply -f ./.infrastructure/clusterip.yml
+kubectl apply -f ./.infrastructure/nodeport.yml
+kubectl apply -f ./.infrastructure/deployment.yml
+kubectl apply -f ./.infrastructure/hpa.yml
+kubectl apply -f ./.infrastructure/todoapp-pod.yml
+
+# Check Pod Status:
+
+kubectl get pods -o wide -n todoapp
+
+
+# Go to the pod busybox:
+
+kubectl -n todoapp exec -it busybox --sh
+
+# Register the command:
+
+curl http://todoapp-clusterip.todoapp.svc.cluster.local
+
+# Explanations
+# 1. Requests and resource limitations.
+    Requests define the minimum resources that the container will receive.
+
+    Limits limit the maximum amount of resources a container can use.
+
+    Requests: memory: 64Mi, cpu: 250m - the minimum resources required for the application to operate under normal conditions.
+
+    Limits: memory: 128Mi, cpu: 500m - the maximum resources that the container can consume to avoid unnecessary resource usage.
+
+# 2. Horizontal Pod Autoscaler (HPA) configuration.
+    CPU: If average CPU usage exceeds 70%, the number of replicas will increase.
+
+    Memory: If the average memory usage exceeds 70%, the number of replicas will also increase.
+
+# 3. Deployment strategy configuration.
+    maxUnavailable: 2 - the maximum number of replicas that may be unavailable during an update.
+
+    maxSurge: 2 - the maximum number of new replicas that can be added at the same time.
+
+These values ​​were chosen to ensure smooth application updates without sudden crashes.
