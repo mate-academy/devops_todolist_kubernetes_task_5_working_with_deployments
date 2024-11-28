@@ -49,3 +49,69 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+#
+# Solution
+
+### I. Deploying the app
+
+*terminal is opened in project root folder
+
+1. **created mateapp namespace**
+
+    ```
+    kubectl apply -f .\.infrastructure\namespace.yml
+    ```
+2. **created the deployment service**
+
+    1. requested such recources becouse it is enough for our dead simple todoapp yet not triggering autoscaling in idle and minimum load.
+    2. set strategy's `maxUnavailable: 1` because we have default idle 2 containers, in order to guarantee the service running at all times we can not set bigger number
+    3. set strategy's `maxSurge: 1` in we do not expect sudden huge increase in resources consumption
+
+    ```
+    kubectl apply -f ..infrastructure\deployment.yml
+    ```
+3. **created horizontal autoscaler**
+
+    I've set `averageUtilization` 70% of *requested* resources
+
+    1. however I could achive same with `averageValue` of `9.6Mi` for memory & `35m` for cpu,
+        but 70% `averageUtilization` is more reliable since `requests` could be changed in future
+        this option makes our autoscaler not independent controller ( it should be adjusted for appropriate changes )
+    2. option with exact `value` is not necessary in our case
+
+    ```
+    kubectl apply -f ..infrastructure\hpa.yml
+    ```
+4. **created nodeport service**
+
+    ```
+    kubectl apply -f ..infrastructure\nodeport-svc.yml
+    ```
+5. **created curlimage pod**
+
+    ```
+    kubectl apply -f .\.infrastructure\busybox.yml
+    ```
+
+### II. Accessing the app
+
+1. accessed our app through `localhost:30001` since we have active nodeport service
+2. accessed our app through curlimage
+
+    ```
+    kubectl exec -it -n mateapp curlpod -- sh
+    curl http://nodeportsvc.mateapp.svc.cluster.local/
+    curl http://nodeportsvc.mateapp.svc.cluster.local/api/health
+    ```
+3. accessed our app through port-forwarding
+
+    ```
+     port-forward svc/nodeportsvc 8081:80 -n mateapp
+    ```
+
+    `localhost:8081`
+
+    ```
+    exit
+    ```
