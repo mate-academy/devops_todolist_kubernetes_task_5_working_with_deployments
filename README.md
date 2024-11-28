@@ -49,3 +49,41 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+## Deployment
+
+To deploy the app to k8s, you will need to have a running cluster and `kubectl` installed. You can use the following commands to deploy the app:
+
+```bash
+kubectl apply -f .infrastructure/deployment.yml
+kubectl apply -f .infrastructure/hpa.yml
+```
+
+## Resources requests and limits
+
+I have tested the app locally and found that it uses around 70Mi of memory and 70Mi of CPU at startup. So I decided to set such requests to ensure that the app has enough resources to run smoothly.
+Then I have checked the app in idle state and found that it still uses around ≈70Mi of memory but only ≈20m of CPU.
+So I decided to set limits a bit higher than requests to ensure that the app can handle more users if needed.
+
+## HPA configuration
+
+I have chosen the following HPA configuration for the app based on the following assumptions:
+
+- Minimum number of pods as 2: To ensure that the app is always available even if one pod fails.
+- Maximum number of pods as 5: To ensure that the app can scale up to handle more users if needed without using too many resources.
+
+[//]: # (`README.md` Should have explained your strategy configuration (Why such numbers))
+
+## Strategy configuration
+
+I have set the strategy to RollingUpdate with maxSurge and maxUnavailable set to 1 to ensure that the app is always available even during updates.
+
+## Accessing the app
+
+After deploying the app, you can access it by running the following command:
+
+```bash
+kubectl port-forward deployment/todoapp 8080:8080 
+```
+
+Then you can access the app at http://localhost:8080.
