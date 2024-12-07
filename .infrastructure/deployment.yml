@@ -10,7 +10,7 @@ spec:
      app: kube2py
  strategy:
    rollingUpdate:
-     maxUnavailable: 0
+     maxUnavailable: 1
  template:
    metadata:
      labels:
