@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: kube2py
+ namespace: mateapp
+spec:
+ replicas: 2
+ selector:
+   matchLabels:
+     app: kube2py
+ strategy:
+   rollingUpdate:
+     maxUnavailable: 1
+ template:
+   metadata:
+     labels:
+       app: kube2py
+   spec:
+     containers:
+       - name: todoapp
+         image: ikulyk404/todoapp:3.0.0
+         resources:
+           requests:
+             memory: "64Mi"
+             cpu: "250m"
+           limits:
+             memory: "128Mi"
+             cpu: "500m"
+         ports:
+           - containerPort: 8080
+         livenessProbe:
+           httpGet:
+             path: api/health
+             port: 8080
+           initialDelaySeconds: 60
+           periodSeconds: 5
+         readinessProbe:
+           httpGet:
+             path: api/ready
+             port: 8080
+           initialDelaySeconds: 5
+           periodSeconds: 5
+       - name: busybox
+         image: radial/busyboxplus:curl
+         resources:
+           requests:
+             memory: "200Mi"
+             cpu: "100m"
+           limits:
+             memory: "300Mi"
+             cpu: "600m"
+         args:
+           - sleep
+           - "1000"
