@@ -49,3 +49,38 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+In order to deploy the app to k8s you should execute the next steps:
+Create namespace
+kubectl create namespace mateapp
+Then apply the next yaml files
+kubectl apply -f deployment.yml
+kubectl apply -f hpa.yml
+
+I decided to set the next values for cpu and memory
+cpu = from 500m to 1000m
+memory = from 512Mi to 1Gi
+This is base parameters for the standard application. After starting needs to analyze working of the application and then increase values if it has need
+Using resources depends on:
+Traffic and load. Amount of users and amount of requests
+Database size
+I/O Operations
+Caching and optimization
+
+I decided to start from 2 replicas. It will be enough for starting and analyzing working. And then will increase amount of the replicas if it has need. Maximize values of replicas is 5
+
+I choosed RollingUpdate strategy configuration with next parameters
+maxUnavailable: 1
+maxSurge: 1
+
+This strategy works well when we need to have constant access to the application
+maxUnavailable: 1 - will provide constant work the application
+maxSurge: 1 - will provide saving resources
+
+In order to check the application in your browser you should execute the next command
+kubectl get pods
+kubectl port-forward pod/name_of_pod_from_result_previous_command 8080:8080 -n mateapp
+Now, the application is available for viewing in your browser by url
+http://localhost:8080/
+
