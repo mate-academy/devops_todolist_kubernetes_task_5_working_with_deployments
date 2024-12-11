@@ -49,3 +49,42 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+
+### how to deploy the app to k8s
+
+Deploying the App to Kubernetes (K8s)
+
+Use these commands:
+
+kubectl apply -f namespace.yml # Create namespace
+kubectl apply -f deployment.yml # Deploy the app
+kubectl apply -f hpa.yml # Configure automatic scaling (HPA)
+
+### Resource Requests and Limits Explanation
+Resource requests and limits were chosen based on expected app resource usage. Memory: 64Mi as minimum request and 128Mi as maximum limit. CPU: 250m request and 500m limit to ensure adequate processing power while avoiding excessive resource consumption.
+
+### HPA Configuration Explanation
+HPA config scales replicas based on observed app resource metrics from 2 to 5 replicas. 'scaleTargetRef' targets 'todoapp' deployment, 'minReplicas' and 'maxReplicas' set lower and upper scaling bounds. CPU and memory metrics considered with a 70% target average utilization for each to efficiently allocate resources.
+
+### Strategy Configuration Explanation (Why These Numbers)
+RollingUpdate strategy chosen to gradually introduce new versions, replacing old pods incrementally. Only one additional pod allowed during updates, ensuring at least one old pod remains available ('maxSurge: 1' and 'maxUnavailable: 1' respectively) for efficient deployment and service availability. These settings align with best practices for continuous delivery and service reliability.
+
+
+### To access the app:
+
+Start the manifest:
+
+kubectl apply -f nodeport.yml
+
+# Get the service name:
+
+kubectl get services -o wide
+
+# Check the service:External Access:
+
+http://"nodeIP":30080
+
+# On localhost:
+http://localhost:30080
