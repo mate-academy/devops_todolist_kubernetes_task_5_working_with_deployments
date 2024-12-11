@@ -49,3 +49,49 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
 1. `INSTRUCTION.md` Should have explained your strategy configuration (Why such numbers)
 1. `INSTRUCTION.md` Should have explained how to access the app after deployment
 1. Create PR with your changes and attach it for validation on a platform.
+
+
+## How to apply all manifests
+create namespace
+```
+kubectl create namespace todoapp
+```
+Use command:
+```
+kubectl apply -f ./infrastructure
+```
+
+## How to test application using the port-forward command
+Use this command:
+```
+kubectl port-forward service/{service_name} 8081:80
+```
+Content will appear at: 
+```
+localhost:8081
+```
+
+## How to test application using ClusterIP service DNS from a busybox container
+Use this command to connect a 'busybox' pod
+```
+kubectl -n todoapp exec -it busybox -- sh
+```
+
+Now we can HHHT GET push to the additional CURL tool:
+```
+curl http://todoapp-clusterip.todoapp.svc.cluster.local
+```
+
+## How to test application using a NodePort Service
+Use this command to see port your nodePorts
+```
+kubectl get svc -n todoapp
+```
+For testing use address like
+```
+http://{NodeIP}:{NodePort}
+```
+Example:
+```
+http://localhost:30080
+```
