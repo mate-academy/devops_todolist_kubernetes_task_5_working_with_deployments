@@ -1,0 +1,7 @@
+resources:
+  - namespace.yml
+  - clusterIp.yml
+  - metric.yml
+  - NodePort.yml
+  - deployment.yml
+  - hpa.yml
