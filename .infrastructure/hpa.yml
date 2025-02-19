@@ -1,8 +1,8 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: todoapp
-  namespace: todoapp
+  name: mateapp
+  namespace: mateapp
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
