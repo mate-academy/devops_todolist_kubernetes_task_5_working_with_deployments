@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp-deployment
+  namespace: mateapp
+spec:
+  replicas: 2 
+  selector:
+    matchLabels:
+      app: todoapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # Максимальна кількість подів, яка може бути створена понад бажану кількість під час оновлення
+      maxUnavailable: 0 # Максимальна кількість подів, які можуть бути недоступними під час оновлення
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+        - name: todoapp-container
+          image: vhurna/todoapp:3.0.0 
+          ports:
+            - containerPort: 8000 # Порт, на якому працює ваша програма
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
