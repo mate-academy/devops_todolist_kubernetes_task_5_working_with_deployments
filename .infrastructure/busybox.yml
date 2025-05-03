@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: busybox
-  namespace: todoapp
+  namespace: mateapp
 spec:
   containers:
   - name: busybox
-    image: radial/busyboxplus:curl
+    image: ikulyk404/busyboxplus:curl
     args:
     - sleep
     - "1000"
