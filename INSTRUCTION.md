@@ -3,7 +3,7 @@
 ## 📁 Files
 All Kubernetes manifests are located in the `.infrastructure` directory:
 - `namespace-mateapp.yml` — Namespace `mateapp`
-- `deployment.yml` — Deployment for the app using image `ikulyk404/kube2py:1.2.0`
+- `deployment.yml` — Deployment for the app using image `olhadevandops/todoapp:3.0.0`
 - `hpa.yml` — Horizontal Pod Autoscaler (HPA)
 
 ---
