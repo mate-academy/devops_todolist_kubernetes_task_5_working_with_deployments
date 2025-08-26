@@ -92,7 +92,7 @@ These endpoints ensure Kubernetes only routes traffic to healthy and ready pods.
 - **ClusterIP:**  
   Use port forwarding:  
   ```sh
-  kubectl port-forward svc/todoapp -n todoapp 8080:80
+  kubectl port-forward svc/todoapp -n mateapp 8080:80
   ```
   Then open `http://localhost:8080/`
 
@@ -107,7 +107,7 @@ kubectl get pods -n mateapp
 Check service endpoints:
 
 ```sh
-kubectl get svc -n todoapp
+kubectl get svc -n mateapp
 ```
 
 ## 9. Additional Notes
