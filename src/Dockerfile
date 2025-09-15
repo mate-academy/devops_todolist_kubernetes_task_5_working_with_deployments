@@ -4,8 +4,9 @@ FROM python:${PYTHON_VERSION}-slim AS builder
 
 WORKDIR /app
 
+COPY requirements.txt .
+
 RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=/src/requirements.txt,target=requirements.txt \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 

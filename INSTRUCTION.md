@@ -4,7 +4,12 @@
  - deploy hpa with command ```kubectl apply -f .infrastructure/hpa.yml -n mateapp```
  - deploy one of the next services:
    - clusterIp with command ```kubectl apply -f .infrastructure/clusterip.yml -n mateapp```
-   - or nodeport with command ```kubectl apply -f .infrastructure/clusterip.yml -n mateapp```
+   - or nodeport with command ```kubectl apply -f .infrastructure/nodeport.yml -n mateapp```
+
+## Deployment strategy explanation:
+Selected strategy is `RollingUpdate` with options `maxUnavailable` - 0, and `maxSurge` - 1. This will prevent reducing number of working pods for better client experience by adding instances of new version on top of existing. 
+Since the app is small and maximum number of pods if 5 (explained below) - `maxSurge` - 1 is a good balance between fast updates and cost efficiency. 
+
 
 ## Resources requests and limits explanation:
 
