@@ -3,7 +3,7 @@
  - deploy deployment with command ```kubectl apply -f .infrastructure/deployment.yml -n mateapp```
  - deploy hpa with command ```kubectl apply -f .infrastructure/hpa.yml -n mateapp```
  - deploy one of the next services:
-   - clusterIp with command ```kubectl apply -f .infrastructure/clusterip.yml -n mateapp```
+   - clusterIp with command ```kubectl apply -f .infrastructure/clusterIp.yml -n mateapp```
    - or nodeport with command ```kubectl apply -f .infrastructure/nodeport.yml -n mateapp```
 
 ## Deployment strategy explanation:
@@ -35,3 +35,6 @@ Maximum number of instances is 5. It will allow to handle good amount of users b
 ## How to reach the app:
 - if you deployed the nodePort service - open the app on the [localhost:30080](http://localhost:30080)
 - if you deployed the clusterIp port - run the command ```kubectl port-forward service/todoapp 8080:80 -n mateapp``` and open [localhost:8080](http://localhost:8080)
+
+## Waring:
+Do not apply `todoapp-pod.yml` specification if Deployment/HPA were applied. It will create duplicates of pods that will also be handled by Service and cause unexpected behavior of the k8s
