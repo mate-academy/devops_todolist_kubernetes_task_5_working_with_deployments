@@ -9,10 +9,14 @@
 
 ## 1) Deployment
 Apply the manifests:
+```
+kubectl create namespace mateapp
+```
+Metrics Server must be installed. See: https://github.com/kubernetes-sigs/metrics-server#installation
 
 ```
-kubectl apply -f deployment.yml
-kubectl apply -f hpa.yml
+kubectl apply -f .infrastructure/deployment.yml
+kubectl apply -f .infrastructure/hpa.yml
 ```
 Check resources:
 ```
@@ -32,7 +36,7 @@ kubectl get deployment -n kube-system metrics-server
 ```
 ## 3) Access the App
 Option A — Port-forward (local testing)
-```commandline
+```
 POD=$(kubectl get pods -n mateapp -l app=todolist -o jsonpath='{.items[0].metadata.name}')
 kubectl port-forward -n mateapp $POD 8080:8080
 ```
@@ -66,4 +70,3 @@ kubectl get hpa -n mateapp
 kubectl describe hpa todoapp-hpa -n mateapp
 kubectl top pods -n mateapp   # requires metrics-server
 ```
-

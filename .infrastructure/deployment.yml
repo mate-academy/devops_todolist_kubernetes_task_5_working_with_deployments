@@ -9,7 +9,7 @@ metadata:
   name: todoapp
   namespace: mateapp
   labels:
-    app: todolist
+    app: todoapp
 spec:
   replicas: 2
   strategy:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        app: todolist
+        app: todoapp
     spec:
       containers:
       - name: todoapp
@@ -46,14 +46,14 @@ spec:
             memory: "512Mi"
         livenessProbe:
           httpGet:
-            path: /api/health
+            path: /
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 10
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /api/ready
+            path: /
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
