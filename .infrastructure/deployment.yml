@@ -19,7 +19,7 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: todolist
+      app: todoapp
   template:
     metadata:
       labels:
@@ -46,14 +46,14 @@ spec:
             memory: "512Mi"
         livenessProbe:
           httpGet:
-            path: /
+            path: /api/health
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 10
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /
+            path: /api/ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
