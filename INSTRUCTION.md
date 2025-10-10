@@ -4,7 +4,7 @@
     kubectl apply -f .infrastructure/namespace.yml
 
 ## 2 Image build.
-    docker build . -t timnord1993/todoapp:3.0.0
+    docker build -t timnord1993/todoapp:3.0.0 .
 
 ## 3 Services adding.
 
@@ -24,19 +24,19 @@
 - 250m CPU and 256Mi RAM are reasonable upper-limits that prevent the pod from consuming excessive resources.
 
 
-    kubectl apply -f deployment.yml -n mateapp
+    kubectl apply -f .infrastructure/deployment.yml -n mateapp
 
 - RollingUpdate strategy was chosen to make updates smoothly and without downtime. 
 maxUnavailable: 1  ->  In order to keep the app running only 1 pod can be unavailable during updating.
-maxSurge: 3  ->  In order to apply new update faster you can create one additional pod.
+maxSurge: 3  ->  In order to apply new update faster you can create 3 additional pods.
 
 ## 6. Applying Horizontal Pod Autoscaler
-- Since the load on the ToDo service is low, initial quantity minReplicas=1 is enough.
+- Since the load on the ToDo service is low, initial quantity minReplicas=2 is enough.
 - As the load increases, HPA will increase the number of replicas to 5  ->  maxReplicas=5
-- averageUtilization: 70 was chosen as balanced value: it allows to scale automatically and not to keep excessive pods constantly.
+- averageUtilization: 70% was chosen as balanced value: it allows to scale automatically and not to keep excessive pods constantly.
 
 
-    kubectl apply -f hpa.yml -n mateapp
+    kubectl apply -f .infrastructure/hpa.yml -n mateapp
 
 ## 7. Testing
     kubectl port-forward svc/todoapp 8080:8080 -n mateapp
