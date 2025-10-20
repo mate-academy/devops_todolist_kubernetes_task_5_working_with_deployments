@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: todoapp-standalone
+  namespace: mateapp
+  labels:
+    app: todoapp
+spec:
+  containers:
+  - name: todoapp
+    image: ikulyk404/todoapp:3.0.0
+    imagePullPolicy: IfNotPresent # Додано ImagePullPolicy
+    ports:
+      - containerPort: 8000
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "250m"
+    livenessProbe:
+      httpGet:
+        path: /api/liveness # Виправлено шлях проби
+        port: 8000
+      initialDelaySeconds: 60
+      periodSeconds: 5
+    readinessProbe:
+      httpGet:
+        path: /api/readiness # Виправлено шлях проби
+        port: 8000
+      initialDelaySeconds: 15
+      periodSeconds: 5
