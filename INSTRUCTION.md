@@ -144,9 +144,9 @@ kubectl get ingress -n mateapp
 Deploy the application using:
 
 ```bash
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
-kubectl apply -f hpa.yaml
+kubectl apply -f .infrastructure/deployment.yml
+kubectl apply -f .infrastructure/service.yml
+kubectl apply -f .infrastructure/hpa.yml
 ```
 
 ---
