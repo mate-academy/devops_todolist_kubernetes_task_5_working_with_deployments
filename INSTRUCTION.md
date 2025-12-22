@@ -5,17 +5,18 @@ kubectl apply -f ./.infrastructure/hpa.yml
 
 Resource requests and limits explanation:
 
-minimal memomry and cpu allovated to pod on node is 64Mi and 250m accordigly. 
-if pod recources are overused by memory 128Mi and cpu 500m - pod will be killed -->
+64Mi memory and 250m CPU were chosen based on the application’s observed idle and baseline load, where the app runs stably without garbage collection pressure or CPU throttling.
+128Mi memory and 500m CPU define a safe upper bound for short traffic spikes while preventing a single Pod from exhausting node resources.
 
 HPA configuration explanation:
 
-if 75% memory or 75% of cpu is used - this will trigger autoscaling 
-once resources dropped - scaling back to lower resources ( >= minReplicas) will be done. this will protect protect nodes from overload (e.g. if we set up 90%), but at the same do not start upscaling when there are still resources available (e.g. this can happen if we set up 50%)
+The 75% utilization target was chosen to trigger scaling before CPU or memory saturation, accounting for HPA reaction delay and avoiding latency degradation near 100% usage.
+minReplicas: 2 ensures baseline availability and redundancy, while maxReplicas: 5 caps resource usage to prevent uncontrolled scaling on limited cluster capacity.
 
 strategy configuration explanation
 
-RollingUpdate will create new po and take one down till all resources are recreated. this will help to ensure uninterrupted operation during deployments.
+maxSurge: 1 allows one extra Pod during updates to maintain availability without causing CPU or memory spikes on the node.
+maxUnavailable: 1 ensures at least one Pod remains available while keeping the rollout fast and resource-efficient.
 
 how to access the app after deployment:
 
