@@ -6,7 +6,10 @@ To deploy the application, follow these steps in order:
 1. Create the namespace:
 `kubectl create namespace mateapp`
 2. Apply Deployment and HPA:
+
 `kubectl apply -f deployment.yml`
+
+`kubectl apply -f hpa.yml`
 3. Apply Service (NodePort):
 `kubectl apply -f nodeport.yml`
 ### 2. Resource Requests and Limits
