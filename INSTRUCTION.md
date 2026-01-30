@@ -9,9 +9,9 @@
    kubectl apply -f .infrastructure/deployment.yml
 4. Apply the nodeport manifest:
    kubectl apply -f .infrastructure/nodeport.yml
-4. Apply the Horizontal Pod Autoscaler (HPA) manifest:
+5. Apply the Horizontal Pod Autoscaler (HPA) manifest:
    kubectl apply -f .infrastructure/hpa.yml
-5. Verify the deployment:
+6. Verify the deployment:
    kubectl get all -n mateapp
    kubectl get hpa -n mateapp
 
