@@ -1,6 +1,12 @@
 ## Deployment Instruction: TodoApp
 This guide explains how to deploy the TodoApp to a Kubernetes cluster and provides a breakdown of the architectural decisions made for reliability and scalability.
 
+### 0. Preparation and Context
+All Kubernetes manifests are located in the .infrastructure directory. To ensure the commands work correctly, you should run them from the root directory of the project.
+
+Alternatively, you can navigate into the directory:
+`cd .infrastructure`
+
 ### 1. How to Deploy the App
 To deploy the application, follow these steps in order:
 1. Create the namespace:
@@ -10,8 +16,7 @@ To deploy the application, follow these steps in order:
 `kubectl apply -f deployment.yml`
 
 `kubectl apply -f hpa.yml`
-3. Apply Service (NodePort):
-`kubectl apply -f nodeport.yml`
+
 ### 2. Resource Requests and Limits
 We have configured the following resources for each pod:
 - `Requests: memory: 130Mi, cpu: 200m`
