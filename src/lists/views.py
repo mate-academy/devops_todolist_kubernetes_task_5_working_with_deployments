@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from lists.forms import TodoForm, TodoListForm
-from lists.models import Todo, TodoList
+from .forms import TodoForm, TodoListForm
+from .models import Todo, TodoList
 
 
 def index(request):
@@ -78,3 +78,10 @@ def add_todolist(request):
             return render(request, "lists/overview.html", {"form": form})
 
     return redirect("lists:index")
+
+
+def liveness(request):
+    return HttpResponse("OK", status=200)
+
+def readiness(request):
+    return HttpResponse("Ready to work!", status=200)

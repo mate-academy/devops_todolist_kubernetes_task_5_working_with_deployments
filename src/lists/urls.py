@@ -1,9 +1,11 @@
 from django.urls import path
 
-from lists import views
+from . import views
 
 app_name = "lists"
 urlpatterns = [
+    path("api/health/live", views.liveness, name="liveness"),
+    path("api/health/ready", views.readiness, name="readiness"),
     path("", views.index, name="index"),
     path("todolist/<int:todolist_id>/", views.todolist, name="todolist"),
     path("todolist/new/", views.new_todolist, name="new_todolist"),
