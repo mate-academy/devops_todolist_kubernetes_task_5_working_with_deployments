@@ -5,7 +5,7 @@
 ### 1. Deployment Steps
 * Create namespace:
    ```bash
-   kubectl create namespace todoapp
+   kubectl create namespace mateapp
 
 * Apply manifests
     ```bash

@@ -3,10 +3,6 @@ kind: Deployment
 metadata:
   name: mateappdeployment
   namespace: mateapp
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "250m"
 spec:
   strategy:
     type: RollingUpdate
@@ -16,17 +12,20 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: todoapp
+      app: mateapp
   template:
     metadata:
-      name: todoapp
-      namespace: todoapp
+      name: mateapp
       labels:
-        app: todoapp
+        app: mateapp
     spec:
       containers:
-        - name: todoapp
+        - name: mateapp
           image: ikulyk404/todoapp:3.0.0
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
           ports:
             - containerPort: 8080
           livenessProbe:

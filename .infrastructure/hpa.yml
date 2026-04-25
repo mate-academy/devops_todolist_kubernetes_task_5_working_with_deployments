@@ -1,14 +1,13 @@
 apiVersion: autoscaling/v2
-kind: HorizontalAutoscaler
+kind: HorizontalPodAutoscaler
 metadata:
-  name: hpaTodoapp
+  name: hpaMateapp
   namespace: mateapp
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: mateappdeployment
-    namespace: mateapp
   minReplicas: 2
   maxReplicas: 5
   metrics:
