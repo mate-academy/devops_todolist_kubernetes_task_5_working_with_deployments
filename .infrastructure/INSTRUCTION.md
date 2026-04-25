@@ -33,4 +33,12 @@ Memory Utilization: 80%
 Rationale: When the load exceeds 80%, new replicas are created, balancing performance and resource savings.
 
 ---
+RollingUpdate:
+
+maxUnavailable: 1 — при обновлении максимум один под может быть недоступен.
+
+maxSurge: 1 — создаётся максимум один дополнительный под сверх реплик.
+
+Обоснование: стратегия обеспечивает плавное обновление без простоя, сохраняя доступность приложения.
+---
 Go to http://127.0.0.1:30080/ in your browser to check your app.
