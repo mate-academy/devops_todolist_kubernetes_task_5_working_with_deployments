@@ -1,8 +1,9 @@
+#ClusterIp manifest
 apiVersion: v1
 kind: Service
 metadata:
   name: todoapp
-  namespace: todoapp
+  namespace: mateapp
 spec:
   type: ClusterIP
   selector:

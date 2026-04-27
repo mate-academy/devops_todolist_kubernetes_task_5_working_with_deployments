@@ -1,8 +1,9 @@
+#busybox pod manifest
 apiVersion: v1
 kind: Pod
 metadata:
   name: busybox
-  namespace: todoapp
+  namespace: mateapp
 spec:
   containers:
   - name: busybox
