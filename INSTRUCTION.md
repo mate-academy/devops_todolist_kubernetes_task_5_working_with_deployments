@@ -1,6 +1,6 @@
 # Deployment Instructions
 ## Resource Requests & Limits
-- **CPU**: request: 100m, limit: 500m
+- **CPU**: request: 100m, limit: 200m
 - **Memory**: request: 128Mi, limit: 256Mi
 
 
@@ -16,7 +16,7 @@
 ## Strategy Configuration
 - Type: RollingUpdate
 - maxSurge: 1
-- maxUnavailable: 0
+- maxUnavailable: 1
 
 
 **Чому так:** RollingUpdate дозволяє оновлювати без даунтайму. maxSurge: 1 — додається 1 новий под перед видаленням старого. maxUnavailable: 0 — всі пода завжди доступні.
