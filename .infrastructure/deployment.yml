@@ -29,20 +29,20 @@ spec:
               memory: "256Mi"
               cpu: "200m"
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
           env:
             - name: EXTERNAL_ENDPOINT
               value: "http://httpbin-api.mateapp.svc.cluster.local"
           livenessProbe:
             httpGet:
               path: /health
-              port: 8000
+              port: 8080
             initialDelaySeconds: 60
             periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /api/
-              port: 8000
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
 

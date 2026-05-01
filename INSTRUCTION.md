@@ -24,3 +24,13 @@
 ```bash
 # Прокинути порт
 kubectl port-forward -n mateapp svc/todoapp 8000:8000
+
+
+## Deployment Commands
+```bash
+# Apply manifests
+kubectl apply -f .infrastructure/deployment.yml
+kubectl apply -f .infrastructure/hpa.yml
+# Check status
+kubectl get pods -n mateapp
+kubectl get hpa -n mateapp
