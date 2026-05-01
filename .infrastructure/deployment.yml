@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoapp
+  namespace: mateapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todoapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
+        - name: todoapp
+          image: midandnight/todoapp:3.1.0
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          ports:
+            - containerPort: 8000
+          env:
+            - name: EXTERNAL_ENDPOINT
+              value: "http://httpbin-api.mateapp.svc.cluster.local"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
