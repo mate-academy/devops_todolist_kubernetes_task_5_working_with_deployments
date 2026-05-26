@@ -20,8 +20,8 @@ kubectl apply -f hpa.yml
 Check the status of the pods and the autoscaler:
 
 ```
-kubectl get pods -n todoapp
-kubectl get hpa -n todoapp
+kubectl get pods -n mateapp
+kubectl get hpa -n mateapp
 ```
 ## Architectural Choices and Justifications
 ### 1. Resource Requests and Limits

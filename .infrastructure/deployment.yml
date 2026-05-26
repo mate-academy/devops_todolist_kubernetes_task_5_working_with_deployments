@@ -22,11 +22,11 @@ spec:
       - name: todoapp
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "30m"
+            memory: "128Mi"
+            cpu: "100m"
           limits:
-            memory: "64Mi"
-            cpu: "30m"
+            memory: "256Mi"
+            cpu: "500m"
         image: ikulyk404/todoapp:3.0.0
         ports:
         - containerPort: 8080
