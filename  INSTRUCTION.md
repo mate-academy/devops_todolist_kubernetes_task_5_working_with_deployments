@@ -21,9 +21,9 @@ kubectl apply -f nodeport.yml
 kubectl apply -f hpa.yml
 
 ### 5. Verify the deployment
-kubectl get pods -n todoapp
-kubectl get deployment -n todoapp
-kubectl get hpa -n todoapp
+kubectl get pods -n mateapp
+kubectl get deployment -n mateapp
+kubectl get hpa -n mateapp
 
 ## Accessing the Application
 The application is accessible via the NodePort service on port **30080**:
