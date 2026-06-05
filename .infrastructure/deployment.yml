@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todoapp
-  namespace: todoapp
+  namespace: mateapp
 spec:
   strategy:
     type: RollingUpdate
@@ -28,6 +28,9 @@ spec:
               memory: "128Mi"
               cpu: "500m"
           image: nichelangeloo/todoapp:3.0.0
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
           ports:
             - containerPort: 8080
           livenessProbe:

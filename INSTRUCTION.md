@@ -11,7 +11,7 @@
 ## 1. Create the Namespace
 
 ```bash
-kubectl apply -f namespace.yml
+kubectl create namespace mateapp
 ```
 
 ---
@@ -26,7 +26,7 @@ kubectl apply -f hpa.yml
 Verify everything is running:
 
 ```bash
-kubectl get all -n todoapp
+kubectl get all -n mateapp
 ```
 
 Expected output: 2 pods in `Running` state, 1 deployment, 1 HPA.
@@ -42,7 +42,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todoapp
-  namespace: todoapp
+  namespace: mateapp
 spec:
   selector:
     app: todoapp
@@ -54,7 +54,7 @@ spec:
 
 ```bash
 kubectl apply -f service.yml
-kubectl get svc -n todoapp
+kubectl get svc -n mateapp
 ```
 
 Once the external IP is assigned:
@@ -66,7 +66,7 @@ http://<EXTERNAL-IP>/api/health
 For local development without a LoadBalancer, use port-forward:
 
 ```bash
-kubectl port-forward -n todoapp deployment/todoapp 8080:8080
+kubectl port-forward -n mateapp deployment/todoapp 8080:8080
 # App available at http://localhost:8080
 ```
 
@@ -74,12 +74,12 @@ kubectl port-forward -n todoapp deployment/todoapp 8080:8080
 
 ## 4. Resource Requests and Limits — Rationale
 
-| | CPU  | Memory |
-|---|------|---|
+| | CPU | Memory |
+|---|---|---|
 | **Request** | 250m | 64Mi |
-| **Limit** | 250m | 128Mi |
+| **Limit** | 500m | 128Mi |
 
-**Requests** define the guaranteed resources the scheduler reserves per pod. `250m` CPU and `64Mi` memory reflect the typical idle consumption of a lightweight Python todo app — enough for the scheduler to place pods on nodes without over-provisioning.
+**Requests** define the guaranteed resources the scheduler reserves per pod. `250m` CPU and `64Mi` memory reflect the typical idle consumption of a lightweight Node.js/Python todo app — enough for the scheduler to place pods on nodes without over-provisioning.
 
 **Limits** are set to `2×` the request values (`500m` CPU, `128Mi` memory). This asymmetry is intentional:
 
