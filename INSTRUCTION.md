@@ -2,6 +2,7 @@
 
 ## How to deploy
 
+kubectl apply -f .infrastructure/clusterIp.yml
 kubectl apply -f .infrastructure/namespace.yml
 kubectl apply -f .infrastructure/deployment.yml
 kubectl apply -f .infrastructure/hpa.yml
