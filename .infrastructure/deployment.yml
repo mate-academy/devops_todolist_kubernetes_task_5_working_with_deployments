@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todolist
-  namespace: todoapp
+  namespace: mateapp
 spec:
   replicas: 2
   selector:
