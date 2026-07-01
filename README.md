@@ -42,7 +42,7 @@ Create a Kubernetes manifest for a pod that will contain a ToDo app container:
     1. Minimum number of pods as 2
     2. Maximum number of pods as 5
     3. Autoscale should be triggered by both CPU and Memory
-1. Both new manifests should belong to `mateapp` namespace
+1. Both new manifests should belong to `todoapp` namespace
 1. `INSTRUCTION.md` should be created with the instructions on how to deploy the app to k8s
 1. `INSTRUCTION.md` Should have explained your choice of resource requests and limits
 1. `INSTRUCTION.md` Should have explained your choice of HPA configuration
