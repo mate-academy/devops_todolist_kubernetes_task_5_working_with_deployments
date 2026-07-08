@@ -28,5 +28,5 @@ HPA (70%): Стандартний поріг масштабування, яки�
 RollingUpdate (maxSurge: 1, maxUnavailable: 0): Гарантує деплой без простою (Zero-Downtime). Старі поди активні, поки нові не перейдуть у статус Ready.
 
 # Доступ до додатка
-kubectl port-forward deployment/todo-app 8000:8000 -n mateapp
+kubectl port-forward deployment/todoapp 8000:8000 -n mateapp
 Посилання для браузера: http://localhost:8000/

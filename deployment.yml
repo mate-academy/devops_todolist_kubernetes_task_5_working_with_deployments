@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-app
+  name: todoapp
   namespace: mateapp
 spec:
   replicas: 2
@@ -12,14 +12,14 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: todo-app
+      app: todoapp
   template:
     metadata:
       labels:
-        app: todo-app
+        app: todoapp
     spec:
       containers:
-      - name: todo-app
+      - name: todoapp
         image: olexandrkv/todoapp:3.0.0
         env:
         - name: PYTHONUNBUFFERED
@@ -45,4 +45,3 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-            
