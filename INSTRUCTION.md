@@ -1,4 +1,15 @@
 # Інструкція розгортання K8s
+# Встановлення необхідних залежностей додатка
+pip install -r requirements.txt
+
+# Виконання міграцій бази даних SQLite
+python manage.py migrate
+
+# Локальний запуск сервера розробки Django
+python manage.py runserver
+
+Головна сторінка та API списків справ: http://127.0.0.1:8000/
+
 Створення простору імен
 kubectl create namespace mateapp
 # Застосування маніфестів розгортання та автоскалювання

@@ -21,8 +21,23 @@ spec:
       containers:
       - name: todo-app
         image: olexandrkv/todoapp:3.0.0
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
         ports:
         - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: api/health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: api/ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
           requests:
             memory: "256Mi"
@@ -30,3 +45,4 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+            
