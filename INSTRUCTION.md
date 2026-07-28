@@ -40,14 +40,14 @@ temporary additional pod.
 After deploying the application, first check that the pods and services are running:
 
 ```bash
-kubectl get pods -n todoapp
-kubectl get services -n todoapp
+kubectl get pods -n mateapp
+kubectl get services -n mateapp
 ```
 
 To access the application from the local machine, forward the service port:
 
 ```bash
-kubectl port-forward service/todoapp-nodeport 8080:80 -n todoapp
+kubectl port-forward service/todoapp-nodeport 8080:80 -n mateapp
 ```
 
 After that, open the following address in a browser:
