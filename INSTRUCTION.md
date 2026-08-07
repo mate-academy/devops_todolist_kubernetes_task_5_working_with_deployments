@@ -42,3 +42,16 @@ kubectl top nodes
 
 ### explanation
 - The limits and requests were chosen for a minimal working setup. If you need more, adjust the memory and cpu values in .infrastructure/deployment.yml (increase cpu if the app runs slowly, increase memory if it's sometimes killed by the OOM killer — memory is in MiB). The HPA triggers scaling once usage reaches 70% of the values written in deployment.yml: if the app needs more, k8s creates new pods, up to a maximum of 5 (minimum 2). For non-stop availability during updates, the RollingUpdate strategy creates 1 new pod before removing an old one (maxSurge: 1, maxUnavailable: 1).
+
+## accessing the app after deployment
+
+This task's manifests (deployment.yml, hpa.yml) don't include a Service, so the simplest way to reach the app is port-forwarding straight to the Deployment:
+
+```
+kubectl port-forward -n mateapp deployment/todoapp-deploy 8080:8080
+```
+
+Then open the app at:
+```
+http://localhost:8080
+```
