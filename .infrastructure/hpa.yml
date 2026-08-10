@@ -1,4 +1,4 @@
-apiVersion: autostacling/v2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: todoapp
@@ -12,14 +12,14 @@ spec:
   maxReplicas: 5
   metrics:
     - type: Resource
-      resources:
+      resource:
         name: cpu
         target:
           types: Utilization
           averageUtilization: 70
     - type: Resource
-      resources:
+      resource:
         name: memory
         target:
-          types: Utilization
+          type: Utilization
           averageUtilization: 70
