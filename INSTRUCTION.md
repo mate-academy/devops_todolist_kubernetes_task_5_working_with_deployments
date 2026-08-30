@@ -1,44 +1,55 @@
-# Todo App Kubernetes Deployment
+# Todo App Kubernetes Instructions
 
-## 1. Deploy the application
+## Prerequisites
 
-The Todo App is deployed to the `mateapp` namespace.
+Before deploying the application, make sure that:
 
-First, create the namespace:
+* Kubernetes cluster is running.
+* `kubectl` is installed and configured.
+* The `mateapp` namespace exists.
+* Metrics Server is installed in the cluster.
+* The cluster supports the `autoscaling/v2` API.
+* CPU and memory metrics are available for the pods.
 
-```
+Create the namespace if it does not exist:
+
+```bash
 kubectl create namespace mateapp
 ```
 
-Apply the Deployment:
+Verify that CPU and memory metrics are available:
 
+```bash
+kubectl top pods -n mateapp
 ```
-kubectl apply -f deployment.yml
-```
-
-Apply the Horizontal Pod Autoscaler:
-
-```
-kubectl apply -f hpa.yml
-```
-
-Check the deployed resources:
-
-```
-kubectl get pods -n mateapp
-kubectl get deployment -n mateapp
-kubectl get hpa -n mateapp
-```
-
-The application starts with 2 replicas.
 
 ---
 
-## 2. Resource requests and limits
+## Deployment
 
-The Deployment uses the following resources:
+Apply the Deployment:
 
+```bash
+kubectl apply -f .infrastructure/deployment.yml
 ```
+
+The Deployment starts with **2 replicas**.
+
+Check the pods:
+
+```bash
+kubectl get pods -n mateapp
+```
+
+The expected idle state is **2 running pods**.
+
+---
+
+## Resource Requests and Limits
+
+The Deployment uses the following resources for each pod:
+
+```yaml
 resources:
   requests:
     cpu: "100m"
@@ -48,29 +59,48 @@ resources:
     memory: "512Mi"
 ```
 
-The resource requests were selected for the normal idle state of the Todo App.
+The requests are set to `100m` CPU and `128Mi` memory because the Todo App has relatively low resource requirements during normal and idle operation. These values allow Kubernetes to run the required 2 pods without reserving unnecessary resources.
 
-Each pod requests:
+The limits are set to `500m` CPU and `512Mi` memory to provide additional resources when the application workload increases while preventing a pod from consuming an unlimited amount of cluster resources.
 
-* `100m` CPU
-* `128Mi` memory
-
-This allows Kubernetes to schedule the required 2 pods without reserving excessive resources.
-
-The resource limits allow each pod to temporarily use more resources when the workload increases:
-
-* `500m` CPU
-* `512Mi` memory
-
-The limits prevent a single pod from consuming an unlimited amount of CPU or memory.
+The resource requests are also required for CPU and memory utilization calculations used by the HPA.
 
 ---
 
-## 3. Deployment strategy
+## Horizontal Pod Autoscaler
+
+Apply the HPA:
+
+```bash
+kubectl apply -f .infrastructure/hpa.yml
+```
+
+The HPA configuration is:
+
+* Minimum replicas: **2**
+* Maximum replicas: **5**
+* CPU target: **70%**
+* Memory target: **80%**
+
+The HPA scales the application based on both CPU and memory utilization.
+
+The CPU threshold of **70%** provides some resource headroom before the pods become CPU-constrained.
+
+The memory threshold of **80%** allows the application to use most of its requested memory while leaving some capacity before additional pods are required.
+
+The minimum of **2 replicas** ensures that two pods are available during normal and idle operation.
+
+The maximum of **5 replicas** provides additional capacity during increased load while limiting the total number of pods and resource consumption.
+
+The HPA requires Metrics Server to provide CPU and memory metrics. The Kubernetes cluster must also support the `autoscaling/v2` API.
+
+---
+
+## Deployment Strategy
 
 The Deployment uses the `RollingUpdate` strategy:
 
-```
+```yaml
 strategy:
   type: RollingUpdate
   rollingUpdate:
@@ -78,99 +108,85 @@ strategy:
     maxUnavailable: 0
 ```
 
-`RollingUpdate` was selected because it allows the application to be updated without intentionally stopping all existing pods at the same time.
+`RollingUpdate` allows a new version of the application to be deployed gradually without stopping all existing pods at once.
 
-The Deployment has 2 replicas in the idle state.
+`maxUnavailable: 0` means that no existing replica should be intentionally unavailable during the update. This prioritizes application availability.
 
-### `maxSurge: 1`
+The trade-off is that additional resources may be required during the update because existing pods remain available until new pods are ready.
 
-During an update, Kubernetes can temporarily create 1 additional pod.
+`maxSurge: 1` allows Kubernetes to create one additional pod during the update. With 2 desired replicas, the Deployment can temporarily have 3 pods.
 
-Therefore, while updating from the old version to the new version, there can temporarily be up to 3 pods.
-
-### `maxUnavailable: 0`
-
-No existing pod should be intentionally unavailable during the update.
-
-This configuration was chosen to keep the application available during a rolling update while still limiting the number of additional pods created during the update.
+This provides a balance between availability and resource consumption. Only one additional pod is created during the rollout instead of creating several additional pods at once.
 
 ---
 
-## 4. Horizontal Pod Autoscaler
+## Application Port and Health Probes
 
-The application uses a Horizontal Pod Autoscaler configured in `hpa.yml`.
+The Todo App listens on **port 8080**.
 
-The HPA configuration is:
+The Deployment uses:
 
-```
-minReplicas: 2
-maxReplicas: 5
-```
-
-The number of pods can therefore automatically increase from 2 to 5.
-
-The HPA monitors both CPU and memory utilization.
-
-### CPU
-
-The CPU target is:
-
-```
-averageUtilization: 70
+```yaml
+ports:
+  - containerPort: 8080
 ```
 
-When the average CPU utilization reaches approximately 70% of the requested CPU resources, the HPA can increase the number of pods.
+The health probes also use port `8080`:
 
-### Memory
+```yaml
+livenessProbe:
+  httpGet:
+    path: api/health
+    port: 8080
 
-The memory target is:
-
+readinessProbe:
+  httpGet:
+    path: api/ready
+    port: 8080
 ```
-averageUtilization: 80
-```
 
-When the average memory utilization reaches approximately 80% of the requested memory resources, the HPA can increase the number of pods.
-
-Both CPU and memory are monitored because increased application load can affect either resource.
-
-The minimum of 2 pods ensures that the application has two running instances during normal load.
-
-The maximum of 5 pods provides additional capacity during higher load while preventing unlimited scaling.
+Therefore, the configured container port matches the application port.
 
 ---
 
-## 5. Access the application
-
-The Todo App container listens on port `8080`.
+## Accessing the Application
 
 To access the application locally, use port forwarding:
 
-```
+```bash
 kubectl port-forward deployment/todoapp-deployment 8080:8080 -n mateapp
 ```
 
-Then open the application in a browser:
+Then open:
 
-```
+```text
 http://localhost:8080
 ```
 
-The port-forward command must remain running while the application is being accessed.
-
 ---
 
-## 6. Verify the HPA
+## Verification
 
-To check the current HPA status:
+Check the Deployment:
 
+```bash
+kubectl get deployment -n mateapp
 ```
+
+Check the pods:
+
+```bash
+kubectl get pods -n mateapp
+```
+
+Check the HPA:
+
+```bash
 kubectl get hpa -n mateapp
 ```
 
-To see detailed HPA information:
+Check CPU and memory metrics:
 
+```bash
+kubectl top pods -n mateapp
 ```
-kubectl describe hpa todoapp-hpa -n mateapp
-```
-
-The HPA will maintain at least 2 pods and can scale the Deployment up to 5 pods depending on CPU and memory utilization.
