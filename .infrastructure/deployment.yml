@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube2py
+  name: todoapp-deployment
   namespace: mateapp
+  labels:
+    app: todoapp
 spec:
   strategy:
     type: RollingUpdate
@@ -12,11 +14,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: kube2py
+      app: todoapp
     template:
       metadata:
         labels:
-          app: kube2py
+          app: todoapp
       spec:
         containers:
         - name: todoapp
@@ -35,3 +37,10 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 5
+          resources:
+            request:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
