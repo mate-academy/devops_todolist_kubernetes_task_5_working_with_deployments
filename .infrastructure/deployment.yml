@@ -15,16 +15,16 @@ spec:
   selector:
     matchLabels:
       app: todoapp
-    template:
-      metadata:
-        labels:
-          app: todoapp
-      spec:
-        containers:
+  template:
+    metadata:
+      labels:
+        app: todoapp
+    spec:
+      containers:
         - name: todoapp
           image: ikulyk404/todoapp:3.0.0
           ports:
-          - containerPort: 8080
+            - containerPort: 8080
           livenessProbe:
             httpGet:
               path: api/health
@@ -38,7 +38,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            request:
+            requests:
               memory: "64Mi"
               cpu: "100m"
             limits:
