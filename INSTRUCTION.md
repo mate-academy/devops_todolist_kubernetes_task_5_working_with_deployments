@@ -10,10 +10,6 @@ Create the Deployment:
 
     kubectl apply -f .infrastructure/deployment.yml
 
-Create the NodePort Service:
-
-    kubectl apply -f .infrastructure/nodeport.yml
-
 Create the Horizontal Pod Autoscaler:
 
     kubectl apply -f .infrastructure/hpa.yml
@@ -22,7 +18,6 @@ Check that the resources are running:
 
     kubectl get deployments -n mateapp
     kubectl get pods -n mateapp
-    kubectl get services -n mateapp
     kubectl get hpa -n mateapp
 
 ## 2. Resource requests and limits
@@ -51,9 +46,9 @@ The HPA is configured with:
 - CPU target utilization: `70%`
 - Memory target utilization: `70%`
 
-Two replicas are always kept running as required by the task. Under increased load, the HPA can increase the number of replicas up to five.
+The HPA keeps at least two replicas running and can scale the Deployment up to five replicas depending on resource utilization.
 
-CPU and memory utilization are calculated relative to the resource requests of the containers. The target value of `70%` leaves additional capacity before the application needs to scale.
+CPU and memory utilization are calculated relative to the resource requests of the containers.
 
 The HPA uses metrics provided by Metrics Server and changes the desired number of replicas of the Deployment when necessary.
 
@@ -68,30 +63,16 @@ The Deployment uses the `RollingUpdate` strategy with:
 
 `maxUnavailable: 1` allows at most one of the required Pods to be unavailable during an update.
 
-These values are suitable for a small Deployment with two replicas because they allow the application to be updated gradually while keeping it available.
+This allows the application to be updated gradually while keeping it available during the deployment process.
 
 ## 5. Accessing the application
 
-The application is exposed using a NodePort Service.
-
-The Service uses:
-
-- `nodePort: 30080` — exposes the Service through the Node
-- `port: 80` — the port of the Kubernetes Service
-- `targetPort: 8080` — the port where the application is running inside the Pod
-
-Traffic flow:
-
-    Node:30080 -> Service:80 -> Pod:8080
-
-The application can be accessed using:
-
-    http://<NODE_IP>:30080
-
-For local testing, port forwarding can also be used:
+For local access to the application, use port forwarding:
 
     kubectl port-forward deployment/todoapp 8080:8080 -n mateapp
 
-Then the application is available at:
+This forwards local port `8080` to port `8080` of one of the Pods managed by the Deployment.
+
+The application can then be accessed at:
 
     http://localhost:8080
