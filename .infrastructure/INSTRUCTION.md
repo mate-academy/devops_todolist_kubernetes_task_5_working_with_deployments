@@ -7,7 +7,7 @@ kubectl apply -f namespace.yml
 ```
 *For convenience, it's safe to say that you should use the default namespace.*
 ```
-kubectl config set-context --current --namespace=todoapp
+kubectl config set-context --current --namespace=mateapp
 ```
 
 2. Start the Deployment
