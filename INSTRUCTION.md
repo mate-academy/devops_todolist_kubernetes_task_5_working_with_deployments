@@ -1,5 +1,25 @@
 # Інструкція: HPA за CPU та Memory
 
+## RollingUpdate strategy explanation
+
+The Deployment uses `maxUnavailable: 0`, so Kubernetes keeps every existing Pod
+available while rolling out a new version. This avoids a reduction in the number
+of ready application replicas during the update. `maxSurge` is intentionally not
+set, which uses Kubernetes' default value of `25%`; Kubernetes may temporarily
+create up to 25% more Pods than the desired replica count. Together, these values
+prioritize uninterrupted availability while allowing a controlled rollout.
+
+## Access instructions
+
+After applying the Deployment, access the ToDo app locally with port forwarding:
+
+```powershell
+kubectl port-forward -n mateapp deployment/todoapp 8080:8080
+```
+
+Then open `http://localhost:8080` in a browser. Port forwarding targets the
+Deployment directly, so it works independently of any Service configuration.
+
 ## 7. Додайте resource requests до Deployment
 
 HPA з типом цілі `Utilization` обчислює відсоток використання відносно
@@ -47,9 +67,9 @@ kubectl apply -f hpa.yml
 ## 10. Перевірте стан автоскейлера
 
 ```powershell
-kubectl get hpa -n my-namespace
-kubectl describe hpa todoapp -n my-namespace
-kubectl top pods -n my-namespace
+kubectl get hpa -n mateapp
+kubectl describe hpa todoapp -n mateapp
+kubectl top pods -n mateapp
 ```
 
 `kubectl top` вимагає встановленого Metrics Server. У колонці `TARGETS`
