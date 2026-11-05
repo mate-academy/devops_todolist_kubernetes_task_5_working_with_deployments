@@ -19,17 +19,15 @@ curl http://todoapp-service.mateapp.svc.cluster.local
 # you'll see html code 
 
 # my choice of resource requests and limits:
-was chosen by analyzing requirements of application while it run with load and without it
+requests/limits — щоб дати контейнеру базовий стабільний ресурс і не перевищувати безпечну межу
 
 # my choice of HPA configuration:
--Minimum number of pods as 2
--Maximum number of pods as 5
-this parameters due to task
-Autoscale should be triggered by both CPU and Memory
-70% of load to give some time to start new pods if load will increase
+HPA 70% — щоб масштабування починалось до того, як pod’и стануть перевантаженими
+minReplicas: 2 — щоб навіть у спокійному стані був запас доступності
+maxReplicas: 5 — щоб обмежити горизонтальне масштабування і не роздувати кластер
 
 # my strategy configuration:
-RollingUpdate was chosen cause I have no significat restrictions in hardware resources
+maxUnavailable: 1 / maxSurge: 1 — щоб оновлення йшло без простою: один pod може бути недоступний, один новий може піднятись зверху
 
 # how to access the app after deployment
 url for local browser: http://127.0.0.1:30080/
