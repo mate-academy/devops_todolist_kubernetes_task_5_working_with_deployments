@@ -10,7 +10,6 @@ kubectl apply -f .infrastructure/clusterIp.yml
 ```
 
 #### Resource requests and limits
-Resource requests in the deployment are set to:
 ```
 requests:
   memory: "64Mi"
@@ -19,13 +18,18 @@ limits:
   memory: "128Mi"
   cpu: "500m"
 ```
-These values are sufficient to cover basic functionality.
+The app is small and stateless, so these values are enough for basic functionality. Requests reserve what a pod normally needs, and limits are about 2x that to absorb spikes without letting one pod hog the node.
 
 #### HPA configuration
-For app scalability, HPA min replicas is `2`, with up to `5` max, and CPU and memory average utilisation targets of `70%`.
+Min replicas is `2`, max is `5`, with CPU and memory average utilisation targets of `70%`.
+- **2 min:** the app stays available if one pod fails or is being updated.
+- **5 max:** allows scaling under load while capping resource use on a small cluster.
+- **70%:** leaves headroom for traffic while new pods start, without scaling too eagerly.
 
 #### Strategy configuration
-To provide high availability, the strategy is `type: RollingUpdate` with `maxUnavailable: 1` and `maxSurge: 1`.
+`type: RollingUpdate` with `maxUnavailable: 1` and `maxSurge: 1`.
+- **`maxUnavailable: 1`:** at least one pod keeps serving during an update, so there is no downtime.
+- **`maxSurge: 1`:** a new pod starts before an old one is removed, so capacity doesn't drop, and extra resource use is limited to one pod.
 
 #### To access the app after deployment
 To access the app, visit [localhost:30007](http://localhost:30007)
